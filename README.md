@@ -4,9 +4,9 @@
 
 API `GET /api/sheet` đọc duy nhất `TIMELINE!A2:R500` của masterplan AIQS đã cấu hình trong `lib/sheets.js`. Xác thực Google bằng service account và scope `spreadsheets.readonly`. File Sheet phải được chia sẻ quyền Viewer cho service account. Không công khai Sheet.
 
-Đặt `GOOGLE_APPLICATION_CREDENTIALS` tới JSON riêng khi chạy cục bộ; trên Vercel đặt secret `GOOGLE_SERVICE_ACCOUNT_JSON` thay cho đường dẫn. Đặt `SHEET_ACCESS_TOKEN` ngẫu nhiên để bảo vệ endpoint, nhập mã đó qua nút Kết nối Sheet. Không đưa khóa Google cho người dùng hoặc vào frontend. Mã dashboard chỉ giữ trong bộ nhớ phiên, không ghi localStorage.
+Đặt `GOOGLE_APPLICATION_CREDENTIALS` tới JSON riêng khi chạy cục bộ; trên Vercel đặt secret `GOOGLE_SERVICE_ACCOUNT_JSON` thay cho đường dẫn. Đặt `SHEET_ACCESS_TOKEN` ngẫu nhiên để bảo vệ endpoint, nhập mã đó qua nút Kết nối Sheet. Không đưa khóa Google cho người dùng hoặc vào frontend. Sau khi xác thực, server cấp cookie phiên có chữ ký, HttpOnly, SameSite=Strict và thời hạn 30 ngày (Secure trên HTTPS). Không lưu mã truy cập hoặc khóa Google trong localStorage. Tải lại trang tự khôi phục phiên. Nút Ngắt kết nối kết thúc phiên trên trình duyệt đó.
 
-Web có nút Làm mới và đọc lại mỗi 60 giây khi tab đang hiển thị, sau khi kết nối thành công. Lỗi đồng bộ giữ dữ liệu trước đó và báo chưa làm mới. Dữ liệu Sheet không ghi localStorage và không trộn với task cục bộ. Ở chế độ Sheet, các công việc chỉ xem và mở về đúng dòng Sheet để cập nhật.
+Web có nút Làm mới và đọc lại mỗi 60 giây khi tab đang hiển thị, sau khi kết nối thành công. Lỗi đồng bộ giữ dữ liệu trước đó và báo chưa làm mới. Hai nguồn riêng: Từ Sheet và Trên web · máy này. Dữ liệu Sheet không ghi localStorage và không thay thế task cục bộ. Task cũ trong aiqs-project-v2 được giữ nguyên. Nếu có task trên web, mặc định tiếp tục hiển thị nguồn đó sau khi mở trang; nguồn Sheet vẫn được làm mới nền. Ở chế độ Sheet, các công việc chỉ xem và mở về đúng dòng Sheet để cập nhật.
 
 Ánh xạ: A ngày đăng, B code, C tiêu đề, J/K/L IC–hạn–sản phẩm nội dung, M/N IC–ngày chụp Photo, O/P/Q IC–hạn–sản phẩm thiết kế. Chỉ các ô IC thực sự có tên mới tạo mục phân công trên dashboard. Không chia một ô chứa nhóm tên thành từng người vì chưa có quy ước. Code trùng được nhận diện theo từng dòng và hiển thị cảnh báo; thay đổi header sẽ báo lỗi.
 
@@ -22,7 +22,7 @@ Các mốc caption D−4/D−2, phân công wireframe/shotlist và mốc hình �
 
 ## Chạy
 
-Node.js 22 trở lên: `npm run dev`, mở http://127.0.0.1:4173. Không cần thư viện bên ngoài.
+Node.js 22 trở lên: cài dependencies từ pnpm-lock.yaml, chạy `npm run dev`, mở http://127.0.0.1:4173. Máy chủ preview chỉ lắng nghe loopback. Khi có cấu hình Sheet cục bộ, yêu cầu cùng nguồn từ chính máy này tự tạo phiên để mở bằng Chrome hay trình duyệt ứng dụng đều dùng được. Cơ chế này không chạy trong API Vercel; bản triển khai cần nhập mã một lần.
 
 `npm test` kiểm tra API, trạng thái rỗng và dữ liệu khởi tạo.
 
