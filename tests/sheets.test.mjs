@@ -6,7 +6,7 @@ test('maps explicit assignments only; no invented progress, due dates, or photo 
  const r=[46326,'AP2','Bài đăng','Thiết kế','','','','','','Người viết',46325,'https://example.com/doc','','','Người thiết kế'];
  const d=mapTimeline([header,r]);assert.equal(d.posts.length,1);assert.equal(d.tasks.length,2);assert.equal(d.posts[0].date,'2026-10-31');assert.equal(d.tasks[0].due,'2026-10-30');assert.equal(d.tasks[1].due,'');assert.ok(d.tasks.every(t=>t.status==='Chưa cập nhật'));assert.equal(d.source.statusAvailable,false);
  assert.equal(mapTimeline([header,[46326,'AP2','Bài đăng']]).tasks.length,0);
- assert.throws(()=>mapTimeline([header,r,r]),/DUPLICATE/);assert.throws(()=>mapTimeline([['Other header']]),/SCHEMA/);assert.equal(sheetDate('Fri 30.10'),'');
+ const duplicated=mapTimeline([header,r,r]);assert.equal(new Set(duplicated.posts.map(p=>p.id)).size,2);assert.deepEqual(duplicated.source.duplicateCodes,['AP2']);assert.throws(()=>mapTimeline([['Other header']]),/SCHEMA/);assert.equal(sheetDate('Fri 30.10'),'');
 });
 test('private Sheet endpoint refuses unauthenticated reads and writes',async()=>{
  const original=process.env.SHEET_ACCESS_TOKEN;process.env.SHEET_ACCESS_TOKEN='private';

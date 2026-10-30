@@ -8,7 +8,7 @@ API `GET /api/sheet` đọc duy nhất `TIMELINE!A2:R500` của masterplan AIQS 
 
 Web có nút Làm mới và đọc lại mỗi 60 giây khi tab đang hiển thị, sau khi kết nối thành công. Lỗi đồng bộ giữ dữ liệu trước đó và báo chưa làm mới. Dữ liệu Sheet không ghi localStorage và không trộn với task cục bộ. Ở chế độ Sheet, các công việc chỉ xem và mở về đúng dòng Sheet để cập nhật.
 
-Ánh xạ: A ngày đăng, B code, C tiêu đề, J/K/L IC–hạn–sản phẩm nội dung, M/N IC–ngày chụp Photo, O/P/Q IC–hạn–sản phẩm thiết kế. Chỉ các ô IC thực sự có tên mới tạo mục phân công trên dashboard. Không chia một ô chứa nhóm tên thành từng người vì chưa có quy ước. Code trùng hoặc đổi header báo lỗi.
+Ánh xạ: A ngày đăng, B code, C tiêu đề, J/K/L IC–hạn–sản phẩm nội dung, M/N IC–ngày chụp Photo, O/P/Q IC–hạn–sản phẩm thiết kế. Chỉ các ô IC thực sự có tên mới tạo mục phân công trên dashboard. Không chia một ô chứa nhóm tên thành từng người vì chưa có quy ước. Code trùng được nhận diện theo từng dòng và hiển thị cảnh báo; thay đổi header sẽ báo lỗi.
 
 Sheet hiện chưa có cột trạng thái duyệt/đăng: tất cả phân công đọc từ Sheet được ghi `Chưa cập nhật`. Không suy luận hoàn thành từ link sản phẩm và không kết luận quá hạn khi chưa biết trạng thái. Cần thống nhất schema trạng thái trước khi bổ sung theo dõi tiến độ đầy đủ. Backend chỉ đọc; chưa có đồng bộ ngược.
 
