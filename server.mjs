@@ -1,8 +1,12 @@
 import http from 'node:http';
 import {readFile} from 'node:fs/promises';
 import handler from './api/chat.js';
+import sheetHandler from './api/sheet.js';
 const allowed={'/':'index.html','/app.js':'app.js','/style.css':'style.css'};
 http.createServer(async(req,res)=>{
+  if(req.url==='/api/sheet'){
+    res.status=code=>{res.statusCode=code;return res;};res.json=data=>{res.setHeader('Content-Type','application/json');res.end(JSON.stringify(data));};return sheetHandler(req,res);
+  }
   if(req.url==='/api/chat'){
     let raw='';for await(const chunk of req){raw+=chunk;if(raw.length>60000){res.writeHead(413);res.end();return;}}
     req.body=raw;res.status=code=>{res.statusCode=code;return res;};res.json=data=>{res.setHeader('Content-Type','application/json');res.end(JSON.stringify(data));};return handler(req,res);
